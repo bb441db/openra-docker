@@ -24,9 +24,14 @@ RUN apk add libgcc=14.2.0-r6 libstdc++=14.2.0-r6 icu-libs=76.1-r1
 
 COPY --from=build /openra/lib/openra /lib/openra
 RUN ln -s /lib/openra/OpenRA.Server /bin/openra-server
-COPY entrypoint.sh /
 
-WORKDIR /
+RUN addgroup -S openragroup && adduser -S openra -G openragroup
 
-ENTRYPOINT ["/entrypoint.sh"]
+USER openra
+
+COPY entrypoint.sh /home/openra
+
+WORKDIR /home/openra
+
+ENTRYPOINT ["/home/openra/entrypoint.sh"]
 CMD ["Engine.EngineDir=/lib/openra"]
